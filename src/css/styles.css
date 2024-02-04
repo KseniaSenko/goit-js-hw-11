@@ -1,12 +1,5 @@
-/**
-  |============================
-  | include css partials with
-  | default @import url()
-  |============================
-*/
 @import url('./reset.css');
-@import url('./vite-promo.css');
-@import url('./header.css');
+@import url('./iziToast.css');
 
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -22,4 +15,54 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+.form-search {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 36px;
+}
+.form-input,
+.timer-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: 0.64px;
+  color: #2e2f42;
+  cursor: pointer;
+}
+.form-input {
+  width: 272px;
+  padding: 8px 16px;
+  text-align: start;
+  border-radius: 4px;
+  border: 1px solid #808080;
+  outline: none;
+}
+.form-input:hover {
+  border: 1px solid #000;
+}
+.form-input:focus {
+  border: 1px solid #4e75ff;
+}
+
+.form-btn {
+  padding: 8px 16px;
+  font-weight: 400;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #4e75ff;
+  color: #fff;
+}
+.form-btn:hover {
+  background: #6c8cff;
+}
+.form-btn:disabled {
+  background: #cfcfcf;
+  color: #989898;
+}
+.form-input:disabled {
+  border: 1px solid #808080;
+  background: #fafafa;
+  color: #808080;
 }
