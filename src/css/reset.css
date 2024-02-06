@@ -1,4 +1,5 @@
 /* Reset styles */
+body,
 h1,
 h2,
 h3,
@@ -30,6 +31,7 @@ button {
 
 img {
   display: block;
-  max-width: 100%;
+  width: 100%;
+  object-fit: cover;
   height: auto;
 }
