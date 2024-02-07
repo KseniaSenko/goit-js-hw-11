@@ -1,5 +1,5 @@
-import fetchImages from "./fetchImages";
-import iconClose from "../img/icon-close.svg";
+import fetchImages from "./js/fetchImages";
+import iconClose from "./img/icon-close.svg";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
