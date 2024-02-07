@@ -8,68 +8,68 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const Refs = {
     formSearch: document.querySelector('.form-search'),
     galleryList: document.querySelector('.gallery'),
+    loader: document.querySelector('.loader'),
 }
 const { formSearch, galleryList, loader} = Refs;
- 
+ console.log(loader);
 formSearch.addEventListener('submit', onFormSubmit);
-galleryList.addEventListener('click', onImgClick);
+
 function onFormSubmit(e) {
     e.preventDefault();
     const inputValue = formSearch.elements.query.value.trim();
-    galleryList.innerHTML = '';
-    if (inputValue !== '') {
-        return fetchImages(inputValue)
-            .then(data => {
-                if (data.hits.length === 0) {
-                     iziToast.error({
-                         id: 'errorMsg',
-                         iconUrl: iconClose,
-                         iconColor: 'white',
-                         message: 'Sorry, there are no images matching your search query. Please try again!',
-                         timeout: 4000,
-                         position: 'topRight',
-                         backgroundColor: '#ef4040',
-                         progressBarColor: '#b51b1b',
-                     })
-                    
-                } else {
-                    const markup = data.hits.map(image => imagesTemplate(image)).join('');
-                    galleryList.insertAdjacentHTML('beforeend', markup)
-                    formSearch.elements.query.value = '';
-                }
-            })
-            .catch(error => {
-               console.error('Error fetching images:', error);
-            })
-        
+
+    if (inputValue === '') {
+        return;
     }
-    
+    galleryList.innerHTML = '';
+    loader.style.display = 'block';
+
+    fetchImages(inputValue)
+        .then(function ({ hits }) {
+            if (hits.length > 0) {
+                renderImage(hits)
+                formSearch.elements.query.value = '';
+                const gallery = new SimpleLightbox('.gallery a', {
+                    captionsData: 'alt',
+                    captionDelay: 250,
+                })
+                gallery.refresh();
+            } else {
+               toastError('Sorry, there are no images matching your search query. Please try again!')
+            }
+        })
+        .catch(error => {
+            toastError(`Error fetching images: ${error}`)
+            }).finally(function () {
+                formSearch.reset();
+                loader.style.display = 'none';
+            })   
 }
-function onImgClick(e) {
-    e.preventDefault();
-    const gallery = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-  captionDelay: 250,
+function toastError(message) {
+    iziToast.show({
+        message,
+         id: 'errorMsg',
+    iconUrl: iconClose,
+    iconColor: 'white',
+    timeout: 4000,
+    position: 'topRight',
+    backgroundColor: '#ef4040',
+    progressBarColor: '#b51b1b',
     })
-    gallery.refresh();
 }
 function imagesTemplate({webformatURL,largeImageURL, tags, likes, views, comments, downloads}) {
     return `<li class="gallery-item">
     <a class="gallery-link" href="${largeImageURL}">
-    <img class="gallery-image" src="${webformatURL}" alt="${tags}" width="360" height="300"/></a>
-    <ul class="gallery-img-info">
-    <li class="gallery-img-likes">Likes ${likes}</li>
-    <li class="gallery-img-views">Views ${views}</li>
-    <li class="gallery-img-comments">Comments ${comments}</li>
-    <li class="gallery-img-downloads">Downloads ${downloads}</li>
+    <img class="gallery-image" src="${webformatURL}" alt="${tags}" width="360"/></a>
+    <ul class="gallery-img-caption">
+    <li class="gallery-img-info">Likes ${likes}</li>
+    <li class="gallery-img-info">Views ${views}</li>
+    <li class="gallery-img-info">Comments ${comments}</li>
+    <li class="gallery-img-info">Downloads ${downloads}</li>
     </ul>
-    </li>`;
+    </li>`; 
 }
-// function renderImage(images) {
-//     // fetchImages(event).then(images => {
-//     //      const markup = q.hits.map(hit => imagesTemplate(hit)).join('');
-//     // // galleryList.insertAdjacentHTML('beforeend', markup);
-//     // })
-//     const markup = images.hits.map(image => imagesTemplate(image)).join('');
-//     galleryList.insertAdjacentHTML('beforeend', markup);
-// }
+function renderImage(images) {
+    const markup = images.map(image => imagesTemplate(image)).join('');
+    galleryList.insertAdjacentHTML('beforeend', markup);
+}
